@@ -670,14 +670,44 @@ declare class MAL_API_USER extends MAL_API {
   me(fields?: string[]): Promise<User>;
 }
 
-export interface MAL_API {
+declare class MAL_OAUTH2 {
+  #urlbaseOAUTH2: "https://myanimelist.net/v1/oauth2";
+  #urlAuthorize: `https://myanimelist.net/v1/oauth2/authorize`;
+  #urlAccessToken: `https://myanimelist.net/v1/oauth2/token`;
+  clientId: string;
+  clientSecret: undefined | string;
+
+  constructor(clientId: string, clientSecret?: string | undefined);
+
+  urlAuthorize(codeChallenge: string): string;
+  accessToken(
+    code: string,
+    codeVerifier: string
+  ): Promise<{
+    token_type: "Bearer";
+    expires_in: number;
+    access_token: string;
+    refresh_token: string;
+  }>;
+  refreshToken(
+    refreshToken: string
+  ): Promise<{
+    token_type: "Bearer";
+    expires_in: number;
+    access_token: string;
+    refresh_token: string;
+  }>;
+}
+
+export interface MAL_API_Library {
   MAL_API_ANIME: MAL_API_ANIME;
   MAL_API_LIST_ANIME: MAL_API_LIST_ANIME;
   MAL_API_LIST_MANGA: MAL_API_LIST_MANGA;
   MAL_API_MANGA: MAL_API_MANGA;
   MAL_API_USER: MAL_API_USER;
+  OAUTH: MAL_OAUTH2;
 }
 
-declare const API: MAL_API;
+declare const API: MAL_API_Library;
 
 export default API;
